@@ -1,6 +1,8 @@
 package com.wu.test;
 
 import com.wu.rpc.api.HelloService;
+import com.wu.rpc.registry.DefaultServiceRegistry;
+import com.wu.rpc.registry.ServiceRegistry;
 import com.wu.rpc.server.RpcServer;
 
 /**
@@ -10,8 +12,10 @@ import com.wu.rpc.server.RpcServer;
 public class TestServer {
     public static void main(String[] args) {
         HelloService helloService = new HelloServiceImpl();
-        RpcServer rpcServer = new RpcServer();
-        rpcServer.register(helloService, 9000);
+        ServiceRegistry serviceRegistry = new DefaultServiceRegistry();
+        serviceRegistry.register(helloService);
+        RpcServer rpcServer = new RpcServer(serviceRegistry);
+        rpcServer.start(9000);
     }
 
 }

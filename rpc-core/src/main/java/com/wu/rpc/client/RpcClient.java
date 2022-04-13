@@ -1,6 +1,7 @@
 package com.wu.rpc.client;
 
 import com.wu.rpc.entity.RpcRequest;
+import com.wu.rpc.exception.RpcException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +31,7 @@ public class RpcClient {
         } catch (IOException | ClassNotFoundException e) {
             logger.error("调用时有错误发生：", e);
             return null;
+            //throw new RpcException("服务调用失败：", e);
         }
     }
 }
