@@ -2,6 +2,7 @@ package com.wu.rpc.api;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -9,6 +10,7 @@ import java.io.Serializable;
  * @author Cactus
  */
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class HelloObject implements Serializable {
     //Serializable序列化接口没有任何方法或者字段，只是用于标识可序列化的语义。
