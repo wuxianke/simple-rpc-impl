@@ -12,7 +12,7 @@ import com.wu.rpc.socket.client.SocketClient;
  */
 public class SocketTestClient {
     public static void main(String[] args) {
-        SocketClient client = new SocketClient("127.0.0.1", 9000);
+        SocketClient client = new SocketClient("127.0.0.1", 9999);
         client.setSerializer(new ProtobufSerializer());
         //接口与代理对象之间的中介对象
         RpcClientProxy proxy = new RpcClientProxy(client);
