@@ -2,6 +2,7 @@ package com.wu.rpc.client;
 
 import com.wu.rpc.entity.RpcRequest;
 import com.wu.rpc.exception.RpcException;
+import com.wu.rpc.serializer.CommonSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,5 +19,5 @@ public interface RpcClient {
 
     Object sendRequest(RpcRequest rpcRequest);
 
-
+    void setSerializer(CommonSerializer serializer);
 }

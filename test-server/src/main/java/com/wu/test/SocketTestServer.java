@@ -3,6 +3,7 @@ package com.wu.test;
 import com.wu.rpc.api.HelloService;
 import com.wu.rpc.registry.DefaultServiceRegistry;
 import com.wu.rpc.registry.ServiceRegistry;
+import com.wu.rpc.serializer.ProtobufSerializer;
 import com.wu.rpc.server.RpcServer;
 import com.wu.rpc.socket.server.SocketServer;
 
@@ -18,6 +19,7 @@ public class SocketTestServer {
         ServiceRegistry serviceRegistry = new DefaultServiceRegistry();
         serviceRegistry.register(helloService);
         SocketServer socketServer = new SocketServer(serviceRegistry);
+        socketServer.setSerializer(new ProtobufSerializer());
         socketServer.start(9000);
     }
 
