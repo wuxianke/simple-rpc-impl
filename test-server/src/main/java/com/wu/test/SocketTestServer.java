@@ -1,8 +1,6 @@
 package com.wu.test;
 
 import com.wu.rpc.api.HelloService;
-import com.wu.rpc.provider.ServiceProviderImpl;
-import com.wu.rpc.registry.ServiceRegistry;
 import com.wu.rpc.serializer.ProtobufSerializer;
 import com.wu.rpc.transport.socket.server.SocketServer;
 
@@ -12,7 +10,7 @@ import com.wu.rpc.transport.socket.server.SocketServer;
  */
 public class SocketTestServer {
     public static void main(String[] args) {
-        HelloService helloService = new HelloServiceImpl();
+        HelloService helloService = new SocketHelloServiceImpl();
         SocketServer socketServer = new SocketServer("127.0.0.1", 9998);
         socketServer.setSerializer(new ProtobufSerializer());
         socketServer.publishService(helloService, HelloService.class);

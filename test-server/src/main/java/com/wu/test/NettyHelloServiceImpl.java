@@ -8,13 +8,13 @@ import org.slf4j.LoggerFactory;
 /**
  * @author 服务端提供的HelloService方法。
  */
-public class HelloServiceImpl implements HelloService {
+public class NettyHelloServiceImpl implements HelloService {
 
-    private static final Logger logger = LoggerFactory.getLogger(HelloServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(NettyHelloServiceImpl.class);
 
     @Override
     public String hello(HelloObject object) {
-        logger.info("接收到：{}", object.getMessage());
-        return "这是掉用的返回值，id = " + object.getId();
+        logger.info("接收到消息：{}", object.getMessage());
+        return "本次处理来自Netty服务";
     }
 }
