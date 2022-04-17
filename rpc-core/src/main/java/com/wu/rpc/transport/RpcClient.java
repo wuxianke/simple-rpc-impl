@@ -1,4 +1,4 @@
-package com.wu.rpc.client;
+package com.wu.rpc.transport;
 
 import com.wu.rpc.entity.RpcRequest;
 import com.wu.rpc.exception.RpcException;

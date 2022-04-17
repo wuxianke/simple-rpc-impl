@@ -1,7 +1,6 @@
-package com.wu.rpc.client;
+package com.wu.rpc.transport;
 
 import com.wu.rpc.entity.RpcRequest;
-import com.wu.rpc.entity.RpcResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
