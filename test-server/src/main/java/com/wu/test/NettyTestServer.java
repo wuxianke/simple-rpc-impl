@@ -13,7 +13,6 @@ public class NettyTestServer {
     public static void main(String[] args) {
         NettyHelloServiceImpl helloService = new NettyHelloServiceImpl();
         NettyServer nettyServer = new NettyServer("127.0.0.1", 9999);
-        nettyServer.setSerializer(new ProtobufSerializer());
         nettyServer.publishService(helloService, HelloService.class);
     }
 }

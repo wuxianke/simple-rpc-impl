@@ -37,10 +37,16 @@ public class NettyClient implements RpcClient {
     private static final EventLoopGroup group;
     private final ServiceDiscovery serviceDiscovery;
 
-    private CommonSerializer serializer;
+    private final CommonSerializer serializer;
 
     public NettyClient() {
+        //以默认序列化器调用构造函数，会调用下方的真正构造函数。
+        this(DEFAULT_SERIALIZER);
+    }
+
+    public NettyClient(Integer serializer) {
         this.serviceDiscovery = new NacosServiceDiscovery();
+        this.serializer = CommonSerializer.getByCode(serializer);
     }
 
     static {
@@ -90,8 +96,4 @@ public class NettyClient implements RpcClient {
         return result.get();
     }
 
-    @Override
-    public void setSerializer(CommonSerializer serializer) {
-        this.serializer = serializer;
-    }
 }

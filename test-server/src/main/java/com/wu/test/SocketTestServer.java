@@ -12,7 +12,6 @@ public class SocketTestServer {
     public static void main(String[] args) {
         HelloService helloService = new SocketHelloServiceImpl();
         SocketServer socketServer = new SocketServer("127.0.0.1", 9998);
-        socketServer.setSerializer(new ProtobufSerializer());
         socketServer.publishService(helloService, HelloService.class);
     }
 

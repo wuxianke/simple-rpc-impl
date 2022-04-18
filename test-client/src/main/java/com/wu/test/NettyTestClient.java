@@ -13,7 +13,6 @@ import com.wu.rpc.serializer.ProtobufSerializer;
 public class NettyTestClient {
     public static void main(String[] args) {
         NettyClient nettyClient = new NettyClient();
-        nettyClient.setSerializer(new ProtobufSerializer());
         RpcClientProxy rpcClientProxy = new RpcClientProxy(nettyClient);
         HelloService helloService = rpcClientProxy.getProxy(HelloService.class);
         HelloObject object = new HelloObject(12, "This is a message");

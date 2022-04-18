@@ -13,7 +13,6 @@ import com.wu.rpc.transport.socket.client.SocketClient;
 public class SocketTestClient {
     public static void main(String[] args) {
         SocketClient client = new SocketClient();
-        client.setSerializer(new ProtobufSerializer());
         //接口与代理对象之间的中介对象
         RpcClientProxy proxy = new RpcClientProxy(client);
         HelloService helloService = proxy.getProxy(HelloService.class);
