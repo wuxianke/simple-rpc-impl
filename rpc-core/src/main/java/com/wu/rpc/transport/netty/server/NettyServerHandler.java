@@ -1,5 +1,6 @@
 package com.wu.rpc.transport.netty.server;
 
+import com.sun.xml.internal.txw2.TXW;
 import com.wu.rpc.entity.RpcRequest;
 import com.wu.rpc.entity.RpcResponse;
 import com.wu.rpc.factory.SingletonFactory;
@@ -23,7 +24,6 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<RpcRequest> 
     private final RequestHandler requestHandler;
     public NettyServerHandler(){
         this.requestHandler = SingletonFactory.getInstance(RequestHandler.class);
-        //引入异步业务线程池，避免长时间的耗时业务阻塞netty本身的worker工作线程，耽误了同一个Selector中其他任务的执行
     }
 
     @Override
@@ -35,10 +35,12 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<RpcRequest> 
             }
             logger.info("服务器接收到请求: {}", msg);
             Object result = requestHandler.handle(msg);
-            //注意这里的通道是workGroup中的，而NettyServer中创建的是bossGroup的，不要混淆
-            ChannelFuture future = ctx.writeAndFlush(RpcResponse.success(result, msg.getRequestId()));
-            //当操作失败或者被取消了就关闭通道
-            future.addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
+            if (ctx.channel().isActive() && ctx.channel().isWritable()){
+                //注意这里的通道是workGroup中的
+                ctx.writeAndFlush(RpcResponse.success(result, msg.getRequestId()));
+            }else {
+                logger.error("通道不可写");
+            }
         }finally {
             ReferenceCountUtil.release(msg);
         }

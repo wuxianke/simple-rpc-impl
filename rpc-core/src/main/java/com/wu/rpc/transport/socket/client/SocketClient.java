@@ -1,5 +1,7 @@
 package com.wu.rpc.transport.socket.client;
 
+import com.wu.rpc.loadbalancer.LoadBalancer;
+import com.wu.rpc.loadbalancer.RandomLoadBalancer;
 import com.wu.rpc.registry.NacosServiceDiscovery;
 import com.wu.rpc.registry.NacosServiceRegistry;
 import com.wu.rpc.registry.ServiceDiscovery;
@@ -33,12 +35,20 @@ public class SocketClient implements RpcClient {
     private final CommonSerializer serializer;
 
     public SocketClient(){
-        this(DEFAULT_SERIALIZER);
+        this(DEFAULT_SERIALIZER, new RandomLoadBalancer());
     }
 
-    public SocketClient(Integer serializer) {
+    public SocketClient(Integer serializer){
+        this(serializer, new RandomLoadBalancer());
+    }
+
+    public SocketClient(LoadBalancer loadBalancer) {
+        this(DEFAULT_SERIALIZER, loadBalancer);
+    }
+
+    public SocketClient(Integer serializer, LoadBalancer loadBalancer){
+        this.serviceDiscovery = new NacosServiceDiscovery(loadBalancer);
         this.serializer = CommonSerializer.getByCode(serializer);
-        this.serviceDiscovery = new NacosServiceDiscovery();
     }
 
     /**
@@ -68,7 +78,7 @@ public class SocketClient implements RpcClient {
                 throw new RpcException(RpcError.SERVICE_INVOCATION_FAILURE, "service:" + rpcRequest.getInterfaceName());
             }
             RpcMessageChecker.check(rpcRequest, rpcResponse);
-            return rpcResponse.getData();
+            return rpcResponse;
         } catch (IOException e) {
             logger.error("调用时有错误发生：", e);
             throw new RpcException("服务调用失败：", e);

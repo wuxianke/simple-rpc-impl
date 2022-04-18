@@ -1,6 +1,10 @@
 package com.wu.rpc.transport;
 
 import com.wu.rpc.entity.RpcRequest;
+import com.wu.rpc.entity.RpcResponse;
+import com.wu.rpc.transport.netty.client.NettyClient;
+import com.wu.rpc.transport.socket.client.SocketClient;
+import com.wu.rpc.util.RpcMessageChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,6 +12,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author Cactus
@@ -33,6 +39,20 @@ public class RpcClientProxy implements InvocationHandler {
         logger.info("调用方法：{}#{}", method.getDeclaringClass().getName(), method.getName());
         RpcRequest rpcRequest = new RpcRequest(UUID.randomUUID().toString(), method.getDeclaringClass().getName(),
                 method.getName(), args, method.getParameterTypes(), false);
-        return client.sendRequest(rpcRequest);
+        RpcResponse rpcResponse = null;
+        if(client instanceof NettyClient){
+            //异步获取调用结果
+            CompletableFuture<RpcResponse> completableFuture = (CompletableFuture<RpcResponse>) client.sendRequest(rpcRequest);
+            try {
+                rpcResponse = completableFuture.get();
+            } catch (InterruptedException |ExecutionException e) {
+                logger.error("方法调用请求失败", e);
+            }
+        }
+        if(client instanceof SocketClient){
+            rpcResponse = (RpcResponse) client.sendRequest(rpcRequest);
+        }
+        RpcMessageChecker.check(rpcRequest, rpcResponse);
+        return rpcResponse.getData();
     }
 }
