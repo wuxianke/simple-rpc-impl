@@ -18,11 +18,13 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import io.netty.handler.timeout.IdleStateHandler;
 import io.protostuff.Rpc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
+import java.util.concurrent.TimeUnit;
 
 /**
  * NIO方式服务提供侧
@@ -69,7 +71,9 @@ public class NettyServer implements RpcServer {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ChannelPipeline pipeline = ch.pipeline();
-                            pipeline.addLast(new CommonEncoder(serializer))
+                            //设定IdleStateHandler心跳检测每30秒进行一次读检测，如果30秒内ChannelRead()方法未被调用则触发一次userEventTrigger()方法
+                            pipeline.addLast(new IdleStateHandler(30, 0, 0, TimeUnit.SECONDS))
+                                    .addLast(new CommonEncoder(serializer))
                                     .addLast(new CommonDecoder())
                                     .addLast(new NettyServerHandler());
                         }
