@@ -9,6 +9,7 @@ import com.wu.rpc.provider.ServiceProviderImpl;
 import com.wu.rpc.registry.NacosServiceRegistry;
 import com.wu.rpc.registry.ServiceRegistry;
 import com.wu.rpc.serializer.CommonSerializer;
+import com.wu.rpc.transport.AbstractRpcServer;
 import com.wu.rpc.transport.RpcServer;
 import com.wu.rpc.factory.ThreadPoolFactory;
 import org.slf4j.Logger;
@@ -25,16 +26,12 @@ import java.util.concurrent.ExecutorService;
  *
  * @author Cactus
  */
-public class SocketServer implements RpcServer {
+public class SocketServer extends AbstractRpcServer {
 
-    private static final Logger logger = LoggerFactory.getLogger(SocketServer.class);
 
     private final ExecutorService threadPool;
-    private final String host;
-    private final int port;
+
     private final RequestHandler requestHandler = new RequestHandler();
-    private final ServiceRegistry serviceRegistry;
-    private final ServiceProvider serviceProvider;
     private final CommonSerializer serializer;
 
     public SocketServer(String host, int port) {
@@ -48,19 +45,19 @@ public class SocketServer implements RpcServer {
         this.serviceProvider = new ServiceProviderImpl();
         this.serializer = CommonSerializer.getByCode(serializer);
         threadPool = ThreadPoolFactory.createDefaultThreadPool("socket-rpc-server");
-
+        scanServices();
 }
 
-    @Override
-    public <T> void publishService(T service, Class<T> serviceClass) {
-        if (serializer == null) {
-            logger.error("未设置序列化器");
-            throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
-        }
-        serviceProvider.addServiceProvider(service, serviceClass);
-        serviceRegistry.register(serviceClass.getCanonicalName(), new InetSocketAddress(host, port));
-        start();
-    }
+//    @Override
+//    public <T> void publishService(T service, Class<T> serviceClass) {
+//        if (serializer == null) {
+//            logger.error("未设置序列化器");
+//            throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
+//        }
+//        serviceProvider.addServiceProvider(service, serviceClass);
+//        serviceRegistry.register(serviceClass.getCanonicalName(), new InetSocketAddress(host, port));
+//        start();
+//    }
     /**
      *
      */

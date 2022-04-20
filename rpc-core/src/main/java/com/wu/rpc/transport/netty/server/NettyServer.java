@@ -1,5 +1,6 @@
 package com.wu.rpc.transport.netty.server;
 
+import com.wu.rpc.annotation.ServiceScan;
 import com.wu.rpc.codec.CommonDecoder;
 import com.wu.rpc.codec.CommonEncoder;
 import com.wu.rpc.enumeration.RpcError;
@@ -10,6 +11,7 @@ import com.wu.rpc.provider.ServiceProviderImpl;
 import com.wu.rpc.registry.NacosServiceRegistry;
 import com.wu.rpc.registry.ServiceRegistry;
 import com.wu.rpc.serializer.*;
+import com.wu.rpc.transport.AbstractRpcServer;
 import com.wu.rpc.transport.RpcServer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
@@ -30,15 +32,8 @@ import java.util.concurrent.TimeUnit;
  * NIO方式服务提供侧
  * @author Cactus
  */
-public class NettyServer implements RpcServer {
+public class NettyServer extends AbstractRpcServer {
 
-    private static final Logger logger = LoggerFactory.getLogger(NettyServer.class);
-
-    private final String host;
-    private final int port;
-
-    private final ServiceRegistry serviceRegistry;
-    private final ServiceProvider serviceProvider;
     private final CommonSerializer serializer;
 
     public NettyServer(String host, int port){
@@ -51,6 +46,7 @@ public class NettyServer implements RpcServer {
         this.serviceRegistry = new NacosServiceRegistry();
         this.serviceProvider = new ServiceProviderImpl();
         this.serializer = CommonSerializer.getByCode(serializer);
+        scanServices();
     }
 
     @Override
@@ -89,15 +85,15 @@ public class NettyServer implements RpcServer {
             workerGroup.shutdownGracefully();
         }
     }
-
-    @Override
-    public <T> void publishService(T service, Class<T> serviceClass) {
-        if (serializer == null){
-            logger.error("未设置序列化器");
-            throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
-        }
-        serviceProvider.addServiceProvider(service, serviceClass);
-        serviceRegistry.register(serviceClass.getCanonicalName(), new InetSocketAddress(host, port));
-        start();
-    }
+//
+//    @Override
+//    public <T> void publishService(T service, Class<T> serviceClass) {
+//        if (serializer == null){
+//            logger.error("未设置序列化器");
+//            throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
+//        }
+//        serviceProvider.addServiceProvider(service, serviceClass);
+//        serviceRegistry.register(serviceClass.getCanonicalName(), new InetSocketAddress(host, port));
+//        start();
+//    }
 }

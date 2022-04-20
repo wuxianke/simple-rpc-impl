@@ -9,9 +9,9 @@ public interface ServiceProvider {
     /**
      * 向本地注册服务
      * @param service 服务
-     * @param <T>服务类型
+     * @param <T> 服务类型
      */
-    <T> void addServiceProvider(T service, Class<T> serviceClass);
+    <T> void addServiceProvider(T service, String serviceName);
 
     /**
      * 从本地缓存中获得服务。

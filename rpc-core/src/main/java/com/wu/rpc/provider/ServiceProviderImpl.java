@@ -35,8 +35,7 @@ public class ServiceProviderImpl implements ServiceProvider {
      * @param <T> 实体类
      */
     @Override
-    public synchronized <T> void addServiceProvider(T service, Class<T> serviceClass) {
-        String serviceName = serviceClass.getCanonicalName();
+    public synchronized <T> void addServiceProvider(T service, String serviceName) {
         if (registeredService.contains(serviceName)) return;
         registeredService.add(serviceName);
         serviceMap.put(serviceName, service);
